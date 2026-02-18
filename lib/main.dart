@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Define It',
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const MyHomePage(title: 'Define It'),
+      home: const HomePage(title: 'Define It'),
     );
   }
 }
