@@ -28,8 +28,27 @@ class _SettingsPageState extends State<SettingsPage> {
             Expanded(
               child: ListView(
                 children: [
-                  SettingsToggle(title: 'Dark Mode', value: false, onChanged: (value) { }),
+                  SettingsToggle(title: 'Dark Mode', value: false, onChanged: (value) {
+                    final messanger = ScaffoldMessenger.of(context);
+                    if (value) {
+                      messanger.showSnackBar(
+                        const SnackBar(content: Text('Dark mode enabled!')),
+                      );
+                    } else {
+                      messanger.showSnackBar(
+                        const SnackBar(content: Text('Dark mode disabled!')),
+                      );
+                    }                    
+                  }),
                   SettingsToggle(title: 'Notifications', value: false, onChanged: (value) { }),
+                  TextButton(
+                    onPressed: () {
+                    // Handle reset settings logic
+                    }, 
+                    child: const Text('Reset Settings',
+                      style: TextStyle(color: Colors.red)
+                    )
+                  )
                 ],
               ),
             ),

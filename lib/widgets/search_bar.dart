@@ -1,10 +1,8 @@
-  import 'package:define_it_v2/models/word_result.dart';
   import 'package:flutter/material.dart';
-  import 'package:flutter/widget_previews.dart';
-  import 'package:define_it_v2/services/dictionary_api.dart';
 
   class WordSearchbar extends StatefulWidget {
-    const WordSearchbar({super.key});
+    final Future<void> Function(String) onSearch;
+    const WordSearchbar({super.key, required this.onSearch});
 
     @override
     State<WordSearchbar> createState() => _WordSearchbarState();
@@ -37,26 +35,26 @@
       super.dispose();
     }
 
-    void _performSearch(String value) async {
-      if (value.isEmpty) return;
-      if (_controller.isOpen) {
-        _controller.closeView(value);
-      }
-      FocusScope.of(context).unfocus();
-      final messanger = ScaffoldMessenger.of(context);
-      try {
-        final WordResult wordResult = WordResult.fromJson(await DictionaryAPI().fetchDefinition(value));
-        if (!mounted) return;
-        messanger.showSnackBar(
-          SnackBar(content: Text(wordResult.toString()))
-        );
-      } catch (e) {
-        if (!mounted) return;
-        messanger.showSnackBar(
-          SnackBar(content: Text('Error fetching definition: $e'))
-        );
-      }
-    }
+    // void _performSearch(String value) async {
+    //   if (value.isEmpty) return;
+    //   if (_controller.isOpen) {
+    //     _controller.closeView(value);
+    //   }
+    //   FocusScope.of(context).unfocus();
+    //   final messanger = ScaffoldMessenger.of(context);
+    //   try {
+    //     final WordResult wordResult = WordResult.fromJson(await DictionaryAPI().fetchDefinition(value));
+    //     if (!mounted) return;
+    //     messanger.showSnackBar(
+    //       SnackBar(content: Text(wordResult.toString()))
+    //     );
+    //   } catch (e) {
+    //     if (!mounted) return;
+    //     messanger.showSnackBar(
+    //       SnackBar(content: Text('Error fetching definition: $e'))
+    //     );
+    //   }
+    // }
 
     IconButton _buildClearButton(SearchController controller) {
       return IconButton(
@@ -71,7 +69,8 @@
       return IconButton(
         icon: const Icon(Icons.search),
         onPressed: () {
-          _performSearch(controller.text);
+          // _performSearch(controller.text);
+          widget.onSearch(controller.text);
         },
       );
     }
@@ -128,18 +127,18 @@
     }
   }
 
-@Preview(name: "Preview Word Searchbar")
-Widget previewWordSearchbar() {
-  return const MaterialApp(
-    home: Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            WordSearchbar(),
-          ],
-        ),
-      ),
-    ),
-  );
-}
+// @Preview(name: "Word Searchbar")
+// Widget previewWordSearchbar() {
+//   return const MaterialApp(
+//     home: Scaffold(
+//       body: Padding(
+//         padding: EdgeInsets.all(16.0),
+//         child: Column(
+//           children: [
+//             WordSearchbar(onSearch: (word) async {null;}),
+//           ],
+//         ),
+//       ),
+//     ),
+//   );
+// }

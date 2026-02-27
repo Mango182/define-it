@@ -1,3 +1,4 @@
+import 'package:define_it_v2/widgets/favorite_word.dart';
 import 'package:flutter/material.dart';
 import 'package:define_it_v2/widgets/app_drawer.dart';
 
@@ -26,28 +27,10 @@ class _BookmarkScreenState extends State<BookmarkPage> {
             Expanded(
               child: ListView(
                 children: [
-                  ListTile(
-                    title: Text('Dark Mode'),
-                    trailing: Switch(
-                      value: false,
-                      onChanged: (value) {
-                        // Handle dark mode toggle
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    title: Text('Notifications'),
-                    trailing: Switch(
-                      value: true,
-                      onChanged: (value) {
-                        // Handle notifications toggle
-                      },
-                    ),
-                  ),
+                  FavoriteWord(word: "Serendipity"),
                 ],
               ),
             ),
-
           ],
         ),
       ),

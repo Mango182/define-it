@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 
 
-class SettingsToggle extends StatelessWidget {
+
+
+class SettingsToggle extends StatefulWidget {
   final String title;
   final bool value;
   final ValueChanged<bool> onChanged;
@@ -15,12 +17,31 @@ class SettingsToggle extends StatelessWidget {
   });
 
   @override
+  State<SettingsToggle> createState() => _SettingsToggleState();
+}
+
+
+class _SettingsToggleState extends State<SettingsToggle> {
+  late bool _isSwitched;
+  @override
+  void initState() {
+    super.initState();
+    _isSwitched = widget.value;
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title),
+      title: Text(widget.title),
       trailing: Switch(
-        value: value,
-        onChanged: onChanged,
+        value: _isSwitched,
+        onChanged: (value) {
+          setState(() {
+            _isSwitched = value;
+          });
+          widget.onChanged(value);
+        },
       ),
     );
   }
@@ -33,9 +54,7 @@ Widget settingsTogglePreview() {
       body: SettingsToggle(
         title: "Dark Mode",
         value: true,
-        onChanged: (value) {
-          // Handle toggle change
-        },
+        onChanged: (value) {},
       ),
     ),
   );
