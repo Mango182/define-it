@@ -58,6 +58,46 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Widget _fontSizePicker() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Icon(Icons.text_fields),
+              SizedBox(width: 16),
+              Text('Font Size', style: TextStyle(fontSize: 16.0)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Slider(
+            value: 16.0, // This should be connected to a provider or state variable
+            min: 12.0,
+            max: 24.0,
+            divisions: 6,
+            label: '16',
+            onChanged: (value) {
+              // Handle font size change, e.g., update provider or state
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _resetSettingsButton() {
+    return TextButton(
+      onPressed: () {
+        // Handle reset settings logic
+      }, 
+      child: const Text('Reset Settings',
+        style: TextStyle(color: Colors.red)
+      )
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,14 +116,8 @@ class _SettingsPageState extends State<SettingsPage> {
               child: ListView(
                 children: [
                   _themePicker(),
-                  TextButton(
-                    onPressed: () {
-                    // Handle reset settings logic
-                    }, 
-                    child: const Text('Reset Settings',
-                      style: TextStyle(color: Colors.red)
-                    )
-                  )
+                  _fontSizePicker(),
+                  _resetSettingsButton(),
                 ],
               ),
             ),
