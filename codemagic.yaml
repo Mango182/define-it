@@ -1,20 +1,54 @@
 workflows:
   ios-workflow:
-    name: iOS Workflow
+    name: iOS and Android Workflow
     instance_type: mac_mini_m1
     working_directory: define_it
+
     environment:
       flutter: stable
+      groups:
+        - github_credentials
+
     scripts:
       - name: Install dependencies
         script: flutter pub get
+
       - name: Build iOS
         script: flutter build ios --release --no-codesign
+
       - name: Package IPA
         script: |
           cd build/ios/iphoneos
+          rm -rf Payload
           mkdir Payload
           cp -r Runner.app Payload/Runner.app
           zip -r define_it.ipa Payload
+
+      - name: Copy IPA into runnables folder
+        script: |
+          mkdir -p ../runnables
+          cp build/ios/iphoneos/define_it.ipa ../runnables/define_it-ios-${CM_BUILD_ID}.ipa
+
+      - name: Build Android APK
+        script: flutter build apk --release
+
+      - name: Copy APK into runnables folder
+        script: |
+          mkdir -p ../runnables
+          cp build/app/outputs/flutter-apk/app-release.apk ../runnables/define_it-android-${CM_BUILD_ID}.apk
+
+      - name: Commit and push runnables
+        script: |
+          cd ..
+
+          git config user.name "Codemagic Bot"
+          git config user.email "codemagic-bot@example.com"
+
+          git add runnables/
+          git commit -m "Add app runnables from Codemagic build ${CM_BUILD_ID}" || echo "No changes to commit"
+
+          git push https://$GITHUB_TOKEN@github.com/YOUR_USERNAME/YOUR_REPO.git HEAD:$CM_BRANCH
+
     artifacts:
       - build/ios/iphoneos/define_it.ipa
+      - build/app/outputs/flutter-apk/app-release.apk
