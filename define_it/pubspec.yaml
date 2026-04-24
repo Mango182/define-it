@@ -28,17 +28,29 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  # For making HTTP requests
   http: ^1.2.2
+  # For showing toast messages
   fluttertoast: ^9.0.0
+  
+  # Database 
   floor: ^1.4.2
   sqflite: ^2.3.0
   sqlite3_flutter_libs: ^0.5.40
   sqlite_inspector: ^0.0.3
   flutter:
     sdk: flutter
+  
+  # State management
   provider: ^6.1.5+1
+
+  # For generating app icons
   flutter_launcher_icons: ^0.14.4
+  
+  # For storing simple key-value pairs
   shared_preferences: ^2.2.2
+  
+  # For playing audio files
   audioplayers: ^6.6.0
   
 
@@ -47,6 +59,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
+  # For generating code for the Floor database
   floor_generator: ^1.4.2
   build_runner: ^2.1.2
   flutter_test:
