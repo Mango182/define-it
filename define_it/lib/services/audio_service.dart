@@ -3,10 +3,11 @@ import 'package:audioplayers/audioplayers.dart';
 class AudioService {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  
-
   Future<void> playAudio(String url) async {
+    if (url.trim().isEmpty) return;
+
     try {
+      await _audioPlayer.stop();
       await _audioPlayer.play(UrlSource(url));
     } catch (e) {
       print('Error playing audio: $e');

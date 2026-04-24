@@ -1,7 +1,7 @@
   import 'package:flutter/material.dart';
 
   class WordSearchbar extends StatefulWidget {
-    final Future<void> Function(String) onSearch;
+    final Future<bool> Function(String) onSearch;
     final List<String> suggestions;
     const WordSearchbar({
       super.key,
@@ -16,16 +16,41 @@
   class _WordSearchbarState extends State<WordSearchbar> {
     late final SearchController _controller;
     late final FocusNode _focusNode;
+    late final ValueNotifier<String?> _errorTextNotifier;
+    String _lastControllerText = '';
+
+    void _clearError() {
+      if (_errorTextNotifier.value == null) return;
+      _errorTextNotifier.value = null;
+    }
+
+    void _setError(String message) {
+      _errorTextNotifier.value = message;
+    }
+
+    void _handleTextChanged(String value) {
+      _lastControllerText = value;
+      _clearError();
+    }
 
     Future<void> _submitSearch(String rawValue) async {
       final value = rawValue.trim();
       if (value.isEmpty) return;
 
-      await widget.onSearch(value);
+      final didSucceed = await widget.onSearch(value);
+
+      if (!didSucceed) {
+        _setError('Word not found');
+        return;
+      }
+
+      _clearError();
 
       if (_controller.isOpen) {
         _controller.closeView(value);
       }
+
+      _controller.clear();
 
       if (mounted) {
         FocusScope.of(context).unfocus();
@@ -37,8 +62,15 @@
       super.initState();
       _controller = SearchController();
       _focusNode = FocusNode();
+      _errorTextNotifier = ValueNotifier<String?>(null);
+      _lastControllerText = _controller.text;
 
       _controller.addListener(() {
+        final currentText = _controller.text;
+        if (currentText != _lastControllerText) {
+          _clearError();
+          _lastControllerText = currentText;
+        }
         setState(() {});
       });
 
@@ -52,6 +84,7 @@
     void dispose() {
       _controller.dispose();
       _focusNode.dispose();
+      _errorTextNotifier.dispose();
       super.dispose();
     }
 
@@ -60,6 +93,7 @@
         icon: const Icon(Icons.clear),
         onPressed: () {
           controller.clear();
+          _clearError();
         },
       );
     }
@@ -67,8 +101,31 @@
     IconButton _buildSearchButton(SearchController controller) {
       return IconButton(
         icon: const Icon(Icons.search),
-        onPressed: () {
-          _submitSearch(controller.text);
+        onPressed: () async {
+          await _submitSearch(controller.text);
+        },
+      );
+    }
+
+    Widget _buildErrorIcon(BuildContext context, String message) {
+      return Tooltip(
+        message: message,
+        child: Icon(
+          Icons.error_outline,
+          color: Theme.of(context).colorScheme.error,
+          size: 20,
+        ),
+      );
+    }
+
+    Widget _buildReactiveErrorIcon(BuildContext context) {
+      return ValueListenableBuilder<String?>(
+        valueListenable: _errorTextNotifier,
+        builder: (context, errorText, _) {
+          if (errorText == null) {
+            return const SizedBox.shrink();
+          }
+          return _buildErrorIcon(context, errorText);
         },
       );
     }
@@ -95,7 +152,12 @@
     Widget build(BuildContext context) {
       return SearchAnchor(
         searchController: _controller,
+        viewOnChanged: _handleTextChanged,
         viewOnSubmitted: _submitSearch,
+        viewTrailing: [
+          _buildReactiveErrorIcon(context),
+          if (_controller.text.isNotEmpty) _buildClearButton(_controller),
+        ],
         builder: (BuildContext context, SearchController controller) {
           return SearchBar(
             controller: controller,
@@ -103,50 +165,36 @@
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.symmetric(horizontal: 16.0),
             ),
-            onTap: () => controller.openView(),
-            onChanged: (_) => controller.openView(),
+            onTap: () {
+              controller.openView();
+            },
+            onChanged: (value) {
+              _handleTextChanged(value);
+              controller.openView();
+            },
             onSubmitted: _submitSearch,
-            trailing: [ _buildTrailingButtons(controller, _focusNode)],
+            trailing: [
+              _buildReactiveErrorIcon(context),
+              _buildTrailingButtons(controller, _focusNode),
+            ],
           );
         },
-        suggestionsBuilder:
-          (BuildContext context, SearchController controller) {
-            final query = controller.text.trim().toLowerCase();
-            final filteredSuggestions = widget.suggestions.where((suggestion) {
-              if (query.isEmpty) return true;
-              return suggestion.toLowerCase().contains(query);
-            }).toList();
+        suggestionsBuilder: (BuildContext context, SearchController controller) {
+          final query = controller.text.trim().toLowerCase();
+          final filteredSuggestions = widget.suggestions.where((suggestion) {
+            if (query.isEmpty) return true;
+            return suggestion.toLowerCase().contains(query);
+          }).toList();
 
-            return filteredSuggestions.map((item) {
-              return ListTile(
-                title: Text(item),
-                onTap: () async {
-                  controller.text = item;
-                  await widget.onSearch(item);
-                  if (controller.isOpen) {
-                    controller.closeView(item);
-                  }
-                  FocusScope.of(context).unfocus();
-                },
-              );
-            });
-          },
+          return filteredSuggestions.map((item) {
+            return ListTile(
+              title: Text(item),
+              onTap: () async {
+                await _submitSearch(item);
+              },
+            );
+          });
+        },
       );
     }
   }
-
-// @Preview(name: "Word Searchbar")
-// Widget previewWordSearchbar() {
-//   return const MaterialApp(
-//     home: Scaffold(
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             WordSearchbar(onSearch: (word) async {null;}),
-//           ],
-//         ),
-//       ),
-//     ),
-//   );
-// }

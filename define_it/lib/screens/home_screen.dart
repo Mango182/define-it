@@ -4,6 +4,7 @@ import 'package:define_it_v2/widgets/app_drawer.dart';
 import 'package:define_it_v2/widgets/word_details.dart';
 import 'package:define_it_v2/widgets/search_bar.dart';
 import 'package:define_it_v2/models/word_result.dart';
+import 'package:define_it_v2/services/audio_service.dart';
 import 'package:define_it_v2/services/dictionary_api.dart';
 import 'package:define_it_v2/services/word_repository.dart';
 
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final WordRepository _wordRepo = WordRepository.instance;
+  final AudioService _audioService = AudioService();
   WordResult _wordResult = WordResult(word: '', definition: '', phonetic: '', audioUrl: '');
   List<String> _recentSearches = const [];
   bool _isLoading = false;
@@ -28,6 +30,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _initializeHome();
+  }
+
+  @override
+  void dispose() {
+    _audioService.dispose();
+    super.dispose();
   }
 
   Future<void> _initializeHome() async {
@@ -51,9 +59,9 @@ class _HomePageState extends State<HomePage> {
     setState(() => _recentSearches = recentSearches);
   }
 
-  Future<void> _loadWord(String word, {bool saveToHistory = true}) async {
+  Future<bool> _loadWord(String word, {bool saveToHistory = true}) async {
     final normalizedWord = word.trim();
-    if (normalizedWord.isEmpty) return;
+    if (normalizedWord.isEmpty) return false;
 
     setState(() => _isLoading = true);
     try {
@@ -66,7 +74,7 @@ class _HomePageState extends State<HomePage> {
       }
       
       // Check if widget is still mounted
-      if (!mounted) return;
+      if (!mounted) return false;
 
       setState(() {
         // Map JSON to your WordResult model
@@ -79,10 +87,14 @@ class _HomePageState extends State<HomePage> {
       }
 
       await _refreshFavoriteStatus();
+      return true;
     } catch (e) {
       // Failed to load word
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
       debugPrint("Error loading word: $e");
+      return false;
     }
   }
 
@@ -140,6 +152,7 @@ class _HomePageState extends State<HomePage> {
               definition: _wordResult.definition,
               phonetic: _wordResult.phonetic,
               audioUrl: _wordResult.audioUrl,
+              onPlayAudio: _audioService.playAudio,
             ),
           ]
         ),

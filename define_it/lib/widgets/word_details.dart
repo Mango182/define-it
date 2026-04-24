@@ -1,34 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
-import 'package:define_it_v2/services/audio_service.dart';
+import 'package:define_it_v2/services/toast_service.dart';
 
 class WordDetails extends StatelessWidget {
   final String word;
   final String definition;
   final String phonetic;
   final String audioUrl;
+  final Future<void> Function(String) onPlayAudio;
 
-  WordDetails({
+  const WordDetails({
     super.key,
     required this.word,
     required this.definition,
     required this.phonetic,
     required this.audioUrl,
+    required this.onPlayAudio,
   });
-
-  final AudioService _audioService = AudioService();
 
   Widget _wordText() {
     return Text(
       word,
-      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
     );
   }
 
   Widget _definitionText() {
     return Text(
       definition,
-      style: TextStyle(fontSize: 16),
+      style: const TextStyle(fontSize: 16),
+    );
+  }
+
+  Widget _phoneticText() {
+    return Text(
+      phonetic,
+      style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+    );
+  }
+
+  Widget _audioButton() {
+    return IconButton(
+      onPressed: () async {
+        if (audioUrl.isEmpty) {
+          ToastService.showError('No audio available for "$word"');
+          return;
+        }
+
+        ToastService.showToast('Playing pronunciation for "$word"');
+        await onPlayAudio(audioUrl);
+      },
+      icon: const Icon(Icons.volume_up),
     );
   }
 
@@ -36,21 +58,12 @@ class WordDetails extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          phonetic,
-          style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-        ),
-        IconButton(
-          onPressed: () {
-            // TODO: Implement audio playback for pronunciation
-            _audioService.playAudio(audioUrl);
-          },
-          icon: Icon(Icons.volume_up),
-        )
+        _phoneticText(),
+        const SizedBox(width: 8),
+        _audioButton(),
       ],
     );
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +73,9 @@ class WordDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _wordText(),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             _phoneticRow(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _definitionText(),
           ],
         ),
@@ -73,10 +86,13 @@ class WordDetails extends StatelessWidget {
 
 @Preview(name: 'Word Details')
 Widget wordDetailsPreview() {
-  return WordDetails(
+  return const WordDetails(
     word: "example",
     definition: "A thing characteristic of its kind or illustrating a general rule.",
     phonetic: "----",
-    audioUrl: "https://example.com/audio.mp3",
+    audioUrl: "",
+    onPlayAudio: _noopPlayAudio,
   );
 }
+
+Future<void> _noopPlayAudio(String url) async {}
