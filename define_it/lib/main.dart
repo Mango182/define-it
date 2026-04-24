@@ -17,20 +17,26 @@ import 'package:provider/provider.dart';
 
 
 void main() async {
+  // Ensure Flutter bindings are initialized before any async operations
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Start the SQLite Inspector in debug mode
   if (kDebugMode) {
     await SqliteInspector.start();
   }
 
+  // Initialize the database  
   final database = await $FloorAppDatabase
     .databaseBuilder('app_database.db')
     .build();
 
+  // Initialize the WordRepository with the DAOs from the database
   WordRepository.initialize(
     favoriteWordDao: database.favoriteWordDao,
     searchedWordDao: database.searchedWordDao,
   );
 
+  // Run the app with providers for database and theme management
   runApp(
     MultiProvider(
       providers: [
@@ -45,9 +51,10 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  /// Builds the route based on the route name and arguments
   Route<dynamic> _buildRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/':
+      case '/':  // home route
         final initialWord = settings.arguments is String
             ? settings.arguments as String
             : null;
@@ -55,17 +62,17 @@ class MyApp extends StatelessWidget {
           builder: (_) => HomePage(initialWord: initialWord),
           settings: settings,
         );
-      case '/favorites':
+      case '/favorites':  // favorites route
         return MaterialPageRoute(
           builder: (_) => const BookmarkPage(),
           settings: settings,
         );
-      case '/settings':
+      case '/settings':  // settings route
         return MaterialPageRoute(
           builder: (_) => const SettingsPage(),
           settings: settings,
         );
-      default:
+      default: // fallback route (home)
         return MaterialPageRoute(
           builder: (_) => const HomePage(),
           settings: settings,
@@ -73,7 +80,6 @@ class MyApp extends StatelessWidget {
     }
   }
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
@@ -81,7 +87,7 @@ class MyApp extends StatelessWidget {
       title: 'Define It',
       theme: ThemeData(useMaterial3: true),
       darkTheme: ThemeData.dark(useMaterial3: true),
-      themeMode: themeProvider.flutterThemeMode,
+      themeMode: themeProvider.flutterThemeMode, // Use the theme mode from the provider
       initialRoute: '/',
       onGenerateRoute: _buildRoute,
     );

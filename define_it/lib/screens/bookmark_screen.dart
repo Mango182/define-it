@@ -1,4 +1,5 @@
 import 'package:define_it_v2/services/word_repository.dart';
+import 'package:define_it_v2/services/toast_service.dart';
 import 'package:flutter/material.dart';
 import 'package:define_it_v2/widgets/app_drawer.dart';
 import 'package:define_it_v2/database/entities/favorite_word.dart';
@@ -61,11 +62,17 @@ class _BookmarkScreenState extends State<BookmarkPage> {
                           icon: const Icon(Icons.delete_outline),
                           onPressed: () async {
                             await _wordRepo.deleteFavoriteWord(favorite.word);
-                            if (!mounted) return;
+                            if (!context.mounted) return;
+                            ToastService.showToast(
+                              'Removed "${favorite.word}" from favorites',
+                            );
                             setState(() {});
                           },
                         ),
                         onTap: () {
+                          ToastService.showToast(
+                            'Viewing details for "${favorite.word}"',
+                          );
                           // Navigate to home and show word details
                           Navigator.of(context).pushNamed('/', arguments: favorite.word)
                             .then((_) {

@@ -6,7 +6,9 @@ class WordResult {
 
   WordResult({required this.word, required this.definition, required this.phonetic, required this.audioUrl});
 
+  /// Factory constructor to create a WordResult instance from a JSON response
   factory WordResult.fromJson(Map<String, dynamic> json) {
+    // Extract the word, definition, phonetic, and audio URL from the JSON response
     final word = json['word'] ?? '';
     String definition = '';
     String phonetic = '';
@@ -23,6 +25,7 @@ class WordResult {
       audioUrl = json['phonetics'][0]['audio'] ?? '';
     }
 
+    // Return a new WordResult instance with the extracted data
     return WordResult(
       word: word,
       definition: definition,

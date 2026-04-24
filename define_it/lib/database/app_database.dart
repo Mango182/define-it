@@ -13,6 +13,5 @@ part 'app_database.g.dart'; // the generated code will be there
 abstract class AppDatabase extends FloorDatabase {
   FavoriteWordDao get favoriteWordDao;
   SearchedWordDao get searchedWordDao;
-
   
 }

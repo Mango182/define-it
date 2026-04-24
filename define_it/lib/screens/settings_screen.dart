@@ -1,5 +1,4 @@
 import 'package:define_it_v2/widgets/app_drawer.dart';
-import 'package:define_it_v2/widgets/settings_toggle.dart';
 import 'package:flutter/material.dart';
 
 // Providers
@@ -77,7 +76,6 @@ class _SettingsPageState extends State<SettingsPage> {
               child: ListView(
                 children: [
                   _themePicker(),
-                  SettingsToggle(title: 'Notifications', value: false, onChanged: (value) { }),
                   TextButton(
                     onPressed: () {
                     // Handle reset settings logic

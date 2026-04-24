@@ -18,35 +18,45 @@ class WordDetails extends StatelessWidget {
     required this.onPlayAudio,
   });
 
+/// Builds the word text widget
   Widget _wordText() {
+    // Text for the Word (as a title)
     return Text(
       word,
       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
     );
   }
 
+  /// Builds the definition text widget
   Widget _definitionText() {
+    // Text for the Definition
     return Text(
       definition,
       style: const TextStyle(fontSize: 16),
     );
   }
 
+  /// Builds the phonetic text widget
   Widget _phoneticText() {
+    // phonetic spelling of the word
     return Text(
-      phonetic,
+      phonetic.isNotEmpty ? phonetic : 'Not available',
       style: TextStyle(fontSize: 18, color: Colors.grey[600]),
     );
   }
 
+  /// Builds the audio button which plays the pronunciation when pressed
   Widget _audioButton() {
+    // Button to play the audio pronunciation
     return IconButton(
       onPressed: () async {
+        // If no audio URL is available, show an error toast instead of trying to play
         if (audioUrl.isEmpty) {
           ToastService.showError('No audio available for "$word"');
           return;
         }
 
+        // Show a toast indicating that the audio is playing
         ToastService.showToast('Playing pronunciation for "$word"');
         await onPlayAudio(audioUrl);
       },
@@ -54,6 +64,7 @@ class WordDetails extends StatelessWidget {
     );
   }
 
+  /// Builds a row containing the phonetic text and the audio button
   Widget _phoneticRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -84,6 +95,9 @@ class WordDetails extends StatelessWidget {
   }
 }
 
+// Preview for WordDetails widget
+Future<void> _noopPlayAudio(String url) async {}
+
 @Preview(name: 'Word Details')
 Widget wordDetailsPreview() {
   return const WordDetails(
@@ -94,5 +108,3 @@ Widget wordDetailsPreview() {
     onPlayAudio: _noopPlayAudio,
   );
 }
-
-Future<void> _noopPlayAudio(String url) async {}

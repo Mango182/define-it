@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 class AudioService {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
+  /// plays audio from the given URL. If another audio is currently playing, it will be stopped before playing the new one.
   Future<void> playAudio(String url) async {
     if (url.trim().isEmpty) return;
 
@@ -14,6 +15,7 @@ class AudioService {
     }
   }
 
+  /// stops any currently playing audio
   Future<void> stopAudio() async {
     try {
       await _audioPlayer.stop();
@@ -22,6 +24,7 @@ class AudioService {
     }
   }
 
+  /// disposes the audio player to free up resources. Should be called when the service is no longer needed.
   Future<void> dispose() async {
     try {
       await _audioPlayer.dispose();

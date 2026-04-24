@@ -11,7 +11,6 @@ import 'package:define_it_v2/services/word_repository.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.initialWord});
-
   final String? initialWord;
 
   @override

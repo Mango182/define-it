@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:define_it_v2/services/toast_service.dart';
 import 'package:flutter/widget_previews.dart';
 
 class FavoriteWord extends StatefulWidget {
   final String word;
-  const FavoriteWord({super.key, required this.word});
+  final VoidCallback? onDelete;
+  final VoidCallback? onTap;
+
+  const FavoriteWord({
+    super.key,
+    required this.word,
+    this.onDelete,
+    this.onTap,
+  });
 
   @override
   State<FavoriteWord> createState() => _FavoriteWordState();
@@ -12,7 +20,7 @@ class FavoriteWord extends StatefulWidget {
 
 class _FavoriteWordState extends State<FavoriteWord> {
   @override
-  initState() {
+  void initState() {
     super.initState();
   }
 
@@ -23,26 +31,14 @@ class _FavoriteWordState extends State<FavoriteWord> {
       title: Text(widget.word),
       // subtitle: const Text('Tap to view definition'),
       onTap: () {
-        Fluttertoast.showToast(
-          msg: 'Viewing definition for "${widget.word}"',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.blueAccent,
-          textColor: Colors.white,
-        );
+        widget.onTap?.call();
+        ToastService.showToast('Viewing details for "${widget.word}"');
       },
       trailing: IconButton(
         icon: const Icon(Icons.delete),
         onPressed: () {
-          setState(() {
-            Fluttertoast.showToast(
-              msg: '"${widget.word}" removed from bookmarks',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.redAccent,
-              textColor: Colors.white,
-            );
-          });
+          widget.onDelete?.call();
+          ToastService.showToast('Removed "${widget.word}" from favorites');
         },
       ),
     );
