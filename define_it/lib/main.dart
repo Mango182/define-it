@@ -1,5 +1,5 @@
-import 'package:define_it_v2/screens/bookmark_screen.dart';
-import 'package:define_it_v2/screens/settings_screen.dart';
+import 'package:define_it/screens/bookmark_screen.dart';
+import 'package:define_it/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 
@@ -8,11 +8,11 @@ import 'package:flutter/foundation.dart';
 import 'package:sqlite_inspector/sqlite_inspector.dart';
 
 // Database
-import 'package:define_it_v2/database/app_database.dart';
-import 'package:define_it_v2/services/word_repository.dart';
+import 'package:define_it/database/app_database.dart';
+import 'package:define_it/services/word_repository.dart';
 
 // Providers
-import 'package:define_it_v2/providers/theme_provider.dart';
+import 'package:define_it/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:define_it_v2/widgets/app_drawer.dart';
-import 'package:define_it_v2/widgets/word_details.dart';
-import 'package:define_it_v2/widgets/search_bar.dart';
-import 'package:define_it_v2/models/word_result.dart';
-import 'package:define_it_v2/services/audio_service.dart';
-import 'package:define_it_v2/services/dictionary_api.dart';
-import 'package:define_it_v2/services/word_repository.dart';
+import 'package:define_it/widgets/app_drawer.dart';
+import 'package:define_it/widgets/word_details.dart';
+import 'package:define_it/widgets/search_bar.dart';
+import 'package:define_it/models/word_result.dart';
+import 'package:define_it/services/audio_service.dart';
+import 'package:define_it/services/dictionary_api.dart';
+import 'package:define_it/services/word_repository.dart';
 
 
 class HomePage extends StatefulWidget {

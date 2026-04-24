@@ -1,0 +1,5 @@
+# Keep default normalization for text files
+* text=auto
+
+# Xcode project files should stay LF to avoid noisy diffs/warnings
+*.pbxproj text eol=lf

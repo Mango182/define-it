@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:define_it_v2/services/toast_service.dart';
+import 'package:define_it/services/toast_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

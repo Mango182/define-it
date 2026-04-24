@@ -1,5 +1,5 @@
 import 'package:floor/floor.dart';
-import 'package:define_it_v2/database/entities/favorite_word.dart';
+import 'package:define_it/database/entities/favorite_word.dart';
 
 @dao
 abstract class FavoriteWordDao {

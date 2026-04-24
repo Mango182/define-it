@@ -1,8 +1,8 @@
-import 'package:define_it_v2/database/dao/searched_word_dao.dart';
-import 'package:define_it_v2/database/dao/favorite_word_dao.dart';
-import 'package:define_it_v2/database/entities/favorite_word.dart';
-import 'package:define_it_v2/database/entities/searched_word.dart';
-import 'package:define_it_v2/models/word_result.dart';
+import 'package:define_it/database/dao/searched_word_dao.dart';
+import 'package:define_it/database/dao/favorite_word_dao.dart';
+import 'package:define_it/database/entities/favorite_word.dart';
+import 'package:define_it/database/entities/searched_word.dart';
+import 'package:define_it/models/word_result.dart';
 
 class WordRepository {
   /// Singleton instance of WordRepository

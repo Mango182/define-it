@@ -1,4 +1,5 @@
 {
     "dart.flutterWidgetPreview": "startEagerly",
-    "dart.flutterWidgetPreviewLocation": "sidebar"
+    "dart.flutterWidgetPreviewLocation": "sidebar",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

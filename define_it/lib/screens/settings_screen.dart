@@ -1,8 +1,8 @@
-import 'package:define_it_v2/widgets/app_drawer.dart';
+import 'package:define_it/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 
 // Providers
-import 'package:define_it_v2/providers/theme_provider.dart';
+import 'package:define_it/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 

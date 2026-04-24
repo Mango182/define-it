@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
-import 'package:define_it_v2/services/toast_service.dart';
+import 'package:define_it/services/toast_service.dart';
 
 class WordDetails extends StatelessWidget {
   final String word;

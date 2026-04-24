@@ -1,8 +1,8 @@
-import 'package:define_it_v2/services/word_repository.dart';
-import 'package:define_it_v2/services/toast_service.dart';
+import 'package:define_it/services/word_repository.dart';
+import 'package:define_it/services/toast_service.dart';
 import 'package:flutter/material.dart';
-import 'package:define_it_v2/widgets/app_drawer.dart';
-import 'package:define_it_v2/database/entities/favorite_word.dart';
+import 'package:define_it/widgets/app_drawer.dart';
+import 'package:define_it/database/entities/favorite_word.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});

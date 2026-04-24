@@ -1,5 +1,5 @@
 import 'package:floor/floor.dart';
-import 'package:define_it_v2/database/entities/searched_word.dart';
+import 'package:define_it/database/entities/searched_word.dart';
 
 @dao
 abstract class SearchedWordDao {

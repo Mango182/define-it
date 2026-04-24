@@ -1,4 +1,4 @@
-package com.example.define_it_v2
+package com.example.define_it
 
 import io.flutter.embedding.android.FlutterActivity
 
