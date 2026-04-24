@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
+import 'package:define_it_v2/services/audio_service.dart';
 
 class WordDetails extends StatelessWidget {
   final String word;
   final String definition;
   final String phonetic;
+  final String audioUrl;
 
-  const WordDetails({
+  WordDetails({
     super.key,
     required this.word,
     required this.definition,
     required this.phonetic,
+    required this.audioUrl,
   });
+
+  final AudioService _audioService = AudioService();
 
   Widget _wordText() {
     return Text(
@@ -36,7 +41,10 @@ class WordDetails extends StatelessWidget {
           style: TextStyle(fontSize: 18, color: Colors.grey[600]),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            // TODO: Implement audio playback for pronunciation
+            _audioService.playAudio(audioUrl);
+          },
           icon: Icon(Icons.volume_up),
         )
       ],
@@ -69,5 +77,6 @@ Widget wordDetailsPreview() {
     word: "example",
     definition: "A thing characteristic of its kind or illustrating a general rule.",
     phonetic: "----",
+    audioUrl: "https://example.com/audio.mp3",
   );
 }

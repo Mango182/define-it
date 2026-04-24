@@ -17,6 +17,21 @@
     late final SearchController _controller;
     late final FocusNode _focusNode;
 
+    Future<void> _submitSearch(String rawValue) async {
+      final value = rawValue.trim();
+      if (value.isEmpty) return;
+
+      await widget.onSearch(value);
+
+      if (_controller.isOpen) {
+        _controller.closeView(value);
+      }
+
+      if (mounted) {
+        FocusScope.of(context).unfocus();
+      }
+    }
+
     @override
     void initState() {
       super.initState();
@@ -40,27 +55,6 @@
       super.dispose();
     }
 
-    // void _performSearch(String value) async {
-    //   if (value.isEmpty) return;
-    //   if (_controller.isOpen) {
-    //     _controller.closeView(value);
-    //   }
-    //   FocusScope.of(context).unfocus();
-    //   final messanger = ScaffoldMessenger.of(context);
-    //   try {
-    //     final WordResult wordResult = WordResult.fromJson(await DictionaryAPI().fetchDefinition(value));
-    //     if (!mounted) return;
-    //     messanger.showSnackBar(
-    //       SnackBar(content: Text(wordResult.toString()))
-    //     );
-    //   } catch (e) {
-    //     if (!mounted) return;
-    //     messanger.showSnackBar(
-    //       SnackBar(content: Text('Error fetching definition: $e'))
-    //     );
-    //   }
-    // }
-
     IconButton _buildClearButton(SearchController controller) {
       return IconButton(
         icon: const Icon(Icons.clear),
@@ -74,8 +68,7 @@
       return IconButton(
         icon: const Icon(Icons.search),
         onPressed: () {
-          // _performSearch(controller.text);
-          widget.onSearch(controller.text);
+          _submitSearch(controller.text);
         },
       );
     }
@@ -102,6 +95,7 @@
     Widget build(BuildContext context) {
       return SearchAnchor(
         searchController: _controller,
+        viewOnSubmitted: _submitSearch,
         builder: (BuildContext context, SearchController controller) {
           return SearchBar(
             controller: controller,
@@ -111,14 +105,7 @@
             ),
             onTap: () => controller.openView(),
             onChanged: (_) => controller.openView(),
-            onSubmitted: (value) async {
-              if (value.trim().isEmpty) return;
-              await widget.onSearch(value);
-              if (_controller.isOpen) {
-                _controller.closeView(value);
-              }
-              FocusScope.of(context).unfocus();
-            },
+            onSubmitted: _submitSearch,
             trailing: [ _buildTrailingButtons(controller, _focusNode)],
           );
         },

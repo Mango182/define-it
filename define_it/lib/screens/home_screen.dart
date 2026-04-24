@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final WordRepository _wordRepo = WordRepository.instance;
-  WordResult _wordResult = WordResult(word: '', definition: '', phonetic: '');
+  WordResult _wordResult = WordResult(word: '', definition: '', phonetic: '', audioUrl: '');
   List<String> _recentSearches = const [];
   bool _isLoading = false;
   bool _isFavorite = false;
@@ -138,7 +138,8 @@ class _HomePageState extends State<HomePage> {
             WordDetails(
               word: _wordResult.word,
               definition: _wordResult.definition,
-              phonetic: _wordResult.phonetic
+              phonetic: _wordResult.phonetic,
+              audioUrl: _wordResult.audioUrl,
             ),
           ]
         ),
