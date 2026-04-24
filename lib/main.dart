@@ -45,6 +45,34 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Route<dynamic> _buildRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/':
+        final initialWord = settings.arguments is String
+            ? settings.arguments as String
+            : null;
+        return MaterialPageRoute(
+          builder: (_) => HomePage(initialWord: initialWord),
+          settings: settings,
+        );
+      case '/favorites':
+        return MaterialPageRoute(
+          builder: (_) => const BookmarkPage(),
+          settings: settings,
+        );
+      case '/settings':
+        return MaterialPageRoute(
+          builder: (_) => const SettingsPage(),
+          settings: settings,
+        );
+      default:
+        return MaterialPageRoute(
+          builder: (_) => const HomePage(),
+          settings: settings,
+        );
+    }
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -55,11 +83,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(useMaterial3: true),
       themeMode: themeProvider.flutterThemeMode,
       initialRoute: '/',
-      routes: {
-        '/': (context) => const HomePage(),
-        '/favorites': (context) => const BookmarkPage(),
-        '/settings': (context) => const SettingsPage(),
-      },
+      onGenerateRoute: _buildRoute,
     );
   }
 }

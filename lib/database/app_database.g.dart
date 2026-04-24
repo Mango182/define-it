@@ -160,6 +160,14 @@ class _$FavoriteWordDao extends FavoriteWordDao {
   }
 
   @override
+  Future<bool?> isFavorite(String word) async {
+    return _queryAdapter.query(
+        'SELECT EXISTS(SELECT 1 FROM FavoriteWord WHERE word = ?1)',
+        mapper: (Map<String, Object?> row) => (row.values.first as int) != 0,
+        arguments: [word]);
+  }
+
+  @override
   Future<void> insertFavoriteWord(FavoriteWord word) async {
     await _favoriteWordInsertionAdapter.insert(
         word, OnConflictStrategy.replace);

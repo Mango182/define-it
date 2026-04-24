@@ -11,4 +11,7 @@ abstract class FavoriteWordDao {
 
   @Query('DELETE FROM FavoriteWord WHERE word = :word')
   Future<void> deleteFavoriteWord(String word);
+
+  @Query('SELECT EXISTS(SELECT 1 FROM FavoriteWord WHERE word = :word)')
+  Future<bool?> isFavorite(String word);
 }

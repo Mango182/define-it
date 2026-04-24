@@ -34,7 +34,7 @@ class AppDrawer extends StatelessWidget{
     final currentRoute = ModalRoute.of(context)?.settings.name;
     navigator.pop(); // close drawer
     if (currentRoute != route) {
-      navigator.pushNamed(route);
+      navigator.pushReplacementNamed(route);
     }
   }
 

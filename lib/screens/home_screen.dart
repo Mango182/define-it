@@ -9,7 +9,9 @@ import 'package:define_it_v2/services/word_repository.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.initialWord});
+
+  final String? initialWord;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -31,7 +33,16 @@ class _HomePageState extends State<HomePage> {
   Future<void> _initializeHome() async {
     await _refreshRecentSearches();
     final lastSearchedWord = await _wordRepo.getLastSearchedWord();
-    await _loadWord(lastSearchedWord ?? 'example', saveToHistory: false);
+    await _loadWord(widget.initialWord ?? lastSearchedWord ?? 'example', saveToHistory: false);
+  }
+
+  Future<void> _refreshFavoriteStatus() async {
+    final currentWord = _wordResult.word;
+    if (currentWord.isEmpty) return;
+
+    final favorite = await _wordRepo.isFavorite(currentWord);
+    if (!mounted) return;
+    setState(() => _isFavorite = favorite ?? false);
   }
 
   Future<void> _refreshRecentSearches() async {
@@ -66,6 +77,8 @@ class _HomePageState extends State<HomePage> {
       if (saveToHistory) {
         await _refreshRecentSearches();
       }
+
+      await _refreshFavoriteStatus();
     } catch (e) {
       // Failed to load word
       setState(() => _isLoading = false);
@@ -135,7 +148,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _isFavorite ? _removeFavorite() : _favoriteWord(),
         tooltip: 'Favorite',
-        child: Icon(_isFavorite? Icons.favorite : Icons.favorite_border),
+        child: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
       ),
     );
   }

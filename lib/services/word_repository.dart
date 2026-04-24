@@ -24,6 +24,11 @@ class WordRepository {
   final SearchedWordDao searchedWordDao;
   WordRepository._internal(this.favoriteWordDao, this.searchedWordDao);
 
+  Future<List<String>> get favoritedWords async {
+    final words = await favoriteWordDao.findAllFavoriteWords();
+    return words.map((w) => w.word).toList();
+  }
+
   Future<void> insertFavoriteWord(WordResult word) async {
     final favoriteWord = FavoriteWord(
       word: word.word,
@@ -65,4 +70,7 @@ class WordRepository {
     await searchedWordDao.deleteSearchedWord(word);
   }
 
+  Future<bool?> isFavorite(String word) async {
+    return await favoriteWordDao.isFavorite(word);
+  }
 }
