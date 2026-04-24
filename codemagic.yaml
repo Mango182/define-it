@@ -15,6 +15,6 @@ workflows:
           cd build/ios/iphoneos
           mkdir Payload
           cp -r Runner.app Payload/Runner.app
-          zip -r Runner.ipa Payload
+          zip -r define_it.ipa Payload
     artifacts:
-      - build/ios/iphoneos/Runner.ipa
+      - build/ios/iphoneos/define_it.ipa
