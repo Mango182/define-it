@@ -2,19 +2,13 @@ workflows:
   ios-workflow:
     name: iOS Workflow
     instance_type: mac_mini_m1
-    working_directory: habit_quest
+    working_directory: .
     environment:
       flutter: stable
     scripts:
       - name: Install dependencies
         script: flutter pub get
-      - name: Build iOS
-        script: flutter build ios --release --no-codesign
-      - name: Package IPA
-        script: |
-          cd build/ios/iphoneos
-          mkdir Payload
-          cp -r define_it.app Payload/define_it.app
-          zip -r define_it.ipa Payload
+      - name: Build IPA
+        script: flutter build ipa --release --no-codesign
     artifacts:
-      - build/ios/iphoneos/define_it.ipa
+      - build/ios/ipa/*.ipa
