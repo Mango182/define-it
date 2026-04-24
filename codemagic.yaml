@@ -2,7 +2,7 @@ workflows:
   ios-workflow:
     name: iOS Workflow
     instance_type: mac_mini_m1
-    working_directory: .
+    working_directory: define_it
     environment:
       flutter: stable
     scripts:
