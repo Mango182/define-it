@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:define_it_v2/widgets/app_drawer.dart';
 
 class BookmarkPage extends StatefulWidget {
-  const BookmarkPage({super.key, required this.title});
-  final String title;
+  const BookmarkPage({super.key});
 
   @override
   State<BookmarkPage> createState() => _BookmarkScreenState();
@@ -16,7 +15,7 @@ class _BookmarkScreenState extends State<BookmarkPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(widget.title),
+        title: const Text('Favorites'),
       ),
       drawer: const AppDrawer(),
       body: Center(

@@ -1,8 +1,8 @@
 import 'package:floor/floor.dart';
 
-@entity
+@Entity(tableName: 'FavoriteWord')
 class FavoriteWord {
-  @primaryKey
+  @PrimaryKey()
   final String word;
   final String definition;
   final String phonetic;

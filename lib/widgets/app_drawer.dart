@@ -1,6 +1,3 @@
-import 'package:define_it_v2/screens/bookmark_screen.dart';
-import 'package:define_it_v2/screens/home_screen.dart';
-import 'package:define_it_v2/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 
@@ -27,26 +24,27 @@ class AppDrawer extends StatelessWidget{
             color: Colors.white,
             size: 48,
           ),
-      ],
+        ],
       ),
     );
   }
 
-  Widget _drawerItem(BuildContext context, String title, IconData icon, Widget? destination) {
+  void _navigateTo(BuildContext context, String route) {
+    final navigator = Navigator.of(context);
+    final currentRoute = ModalRoute.of(context)?.settings.name;
+    navigator.pop(); // close drawer
+    if (currentRoute != route) {
+      navigator.pushNamed(route);
+    }
+  }
+
+  Widget _drawerItem(BuildContext context, String title, IconData icon) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
       onTap: () {
-        final navigator = Navigator.of(context);
-        // Close the drawer
-        navigator.pop();
-
         // navigation functionality
-        if (destination != null) {
-          navigator.push(
-            MaterialPageRoute(builder: (context) => destination)
-          );
-        }
+        title == 'Home' ? _navigateTo(context, '/') : _navigateTo(context, '/${title.toLowerCase()}');
       },
     );
   }
@@ -58,9 +56,9 @@ class AppDrawer extends StatelessWidget{
         padding: EdgeInsets.zero,
         children: <Widget>[
           _drawerHeader(),
-          _drawerItem(context, 'Home', Icons.home, HomePage(title: "home")),
-          _drawerItem(context, 'Favorites', Icons.favorite, BookmarkPage(title: "Favorites")), // No destination for now
-          _drawerItem(context, 'Settings', Icons.settings, SettingsPage(title: "Settings")),
+          _drawerItem(context, 'Home', Icons.home),
+          _drawerItem(context, 'Favorites', Icons.favorite), // No destination for now
+          _drawerItem(context, 'Settings', Icons.settings),
         ]
       )
     );

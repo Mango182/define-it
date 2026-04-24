@@ -2,7 +2,12 @@
 
   class WordSearchbar extends StatefulWidget {
     final Future<void> Function(String) onSearch;
-    const WordSearchbar({super.key, required this.onSearch});
+    final List<String> suggestions;
+    const WordSearchbar({
+      super.key,
+      required this.onSearch,
+      this.suggestions = const [],
+    });
 
     @override
     State<WordSearchbar> createState() => _WordSearchbarState();
@@ -106,19 +111,35 @@
             ),
             onTap: () => controller.openView(),
             onChanged: (_) => controller.openView(),
-            onSubmitted: null,
+            onSubmitted: (value) async {
+              if (value.trim().isEmpty) return;
+              await widget.onSearch(value);
+              if (_controller.isOpen) {
+                _controller.closeView(value);
+              }
+              FocusScope.of(context).unfocus();
+            },
             trailing: [ _buildTrailingButtons(controller, _focusNode)],
           );
         },
         suggestionsBuilder:
           (BuildContext context, SearchController controller) {
-            return List<ListTile>.generate(5, (int index) {
-              final String item = "Suggestion $index";
+            final query = controller.text.trim().toLowerCase();
+            final filteredSuggestions = widget.suggestions.where((suggestion) {
+              if (query.isEmpty) return true;
+              return suggestion.toLowerCase().contains(query);
+            }).toList();
+
+            return filteredSuggestions.map((item) {
               return ListTile(
                 title: Text(item),
-                onTap: () {
-                  // Implement suggestion selection functionality here
-                  controller.closeView(item);
+                onTap: () async {
+                  controller.text = item;
+                  await widget.onSearch(item);
+                  if (controller.isOpen) {
+                    controller.closeView(item);
+                  }
+                  FocusScope.of(context).unfocus();
                 },
               );
             });

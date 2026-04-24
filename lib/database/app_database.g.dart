@@ -72,7 +72,9 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
-  WordDao? _wordDaoInstance;
+  FavoriteWordDao? _favoriteWordDaoInstance;
+
+  SearchedWordDao? _searchedWordDaoInstance;
 
   Future<sqflite.Database> open(
     String path,
@@ -97,6 +99,8 @@ class _$AppDatabase extends AppDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `FavoriteWord` (`word` TEXT NOT NULL, `definition` TEXT NOT NULL, `phonetic` TEXT NOT NULL, PRIMARY KEY (`word`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `SearchedWord` (`word` TEXT NOT NULL, PRIMARY KEY (`word`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -105,28 +109,26 @@ class _$AppDatabase extends AppDatabase {
   }
 
   @override
-  WordDao get wordDao {
-    return _wordDaoInstance ??= _$WordDao(database, changeListener);
+  FavoriteWordDao get favoriteWordDao {
+    return _favoriteWordDaoInstance ??=
+        _$FavoriteWordDao(database, changeListener);
+  }
+
+  @override
+  SearchedWordDao get searchedWordDao {
+    return _searchedWordDaoInstance ??=
+        _$SearchedWordDao(database, changeListener);
   }
 }
 
-class _$WordDao extends WordDao {
-  _$WordDao(
+class _$FavoriteWordDao extends FavoriteWordDao {
+  _$FavoriteWordDao(
     this.database,
     this.changeListener,
   )   : _queryAdapter = QueryAdapter(database),
         _favoriteWordInsertionAdapter = InsertionAdapter(
             database,
             'FavoriteWord',
-            (FavoriteWord item) => <String, Object?>{
-                  'word': item.word,
-                  'definition': item.definition,
-                  'phonetic': item.phonetic
-                }),
-        _favoriteWordDeletionAdapter = DeletionAdapter(
-            database,
-            'FavoriteWord',
-            ['word'],
             (FavoriteWord item) => <String, Object?>{
                   'word': item.word,
                   'definition': item.definition,
@@ -141,8 +143,6 @@ class _$WordDao extends WordDao {
 
   final InsertionAdapter<FavoriteWord> _favoriteWordInsertionAdapter;
 
-  final DeletionAdapter<FavoriteWord> _favoriteWordDeletionAdapter;
-
   @override
   Future<List<FavoriteWord>> findAllFavoriteWords() async {
     return _queryAdapter.queryList('SELECT * FROM FavoriteWord',
@@ -153,13 +153,70 @@ class _$WordDao extends WordDao {
   }
 
   @override
+  Future<void> deleteFavoriteWord(String word) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM FavoriteWord WHERE word = ?1',
+        arguments: [word]);
+  }
+
+  @override
   Future<void> insertFavoriteWord(FavoriteWord word) async {
     await _favoriteWordInsertionAdapter.insert(
         word, OnConflictStrategy.replace);
   }
+}
+
+class _$SearchedWordDao extends SearchedWordDao {
+  _$SearchedWordDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _searchedWordInsertionAdapter = InsertionAdapter(
+            database,
+            'SearchedWord',
+            (SearchedWord item) => <String, Object?>{'word': item.word});
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<SearchedWord> _searchedWordInsertionAdapter;
 
   @override
-  Future<void> deleteFavoriteWord(FavoriteWord word) async {
-    await _favoriteWordDeletionAdapter.delete(word);
+  Future<List<SearchedWord>> findAllSearchedWords() async {
+    return _queryAdapter.queryList('SELECT * FROM SearchedWord',
+        mapper: (Map<String, Object?> row) =>
+            SearchedWord(word: row['word'] as String));
+  }
+
+  @override
+  Future<List<SearchedWord>> findRecentSearchedWords(int limit) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM SearchedWord ORDER BY rowid DESC LIMIT ?1',
+        mapper: (Map<String, Object?> row) =>
+            SearchedWord(word: row['word'] as String),
+        arguments: [limit]);
+  }
+
+  @override
+  Future<String?> findLastSearchedWord() async {
+    return _queryAdapter.query(
+        'SELECT word FROM SearchedWord ORDER BY rowid DESC LIMIT 1',
+        mapper: (Map<String, Object?> row) => row.values.first as String);
+  }
+
+  @override
+  Future<void> deleteSearchedWord(String word) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM SearchedWord WHERE word = ?1',
+        arguments: [word]);
+  }
+
+  @override
+  Future<void> insertSearchedWord(SearchedWord word) async {
+    await _searchedWordInsertionAdapter.insert(
+        word, OnConflictStrategy.replace);
   }
 }

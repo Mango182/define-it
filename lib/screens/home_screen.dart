@@ -1,57 +1,71 @@
-import 'package:define_it_v2/database/app_database.dart';
-import 'package:define_it_v2/database/word_dao.dart';
+import 'package:flutter/material.dart';
+
 import 'package:define_it_v2/widgets/app_drawer.dart';
 import 'package:define_it_v2/widgets/word_details.dart';
-import 'package:flutter/material.dart';
 import 'package:define_it_v2/widgets/search_bar.dart';
 import 'package:define_it_v2/models/word_result.dart';
 import 'package:define_it_v2/services/dictionary_api.dart';
-import 'package:define_it_v2/database/favorite_word.dart';
+import 'package:define_it_v2/services/word_repository.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late WordResult _wordResult = WordResult(word: '', definition: '', phonetic: '');
-  late WordDao _wordDao;
+  final WordRepository _wordRepo = WordRepository.instance;
+  WordResult _wordResult = WordResult(word: '', definition: '', phonetic: '');
+  List<String> _recentSearches = const [];
   bool _isLoading = false;
   bool _isFavorite = false;
-
-  Future<void>_initDatabase() async {
-    final database = await $FloorAppDatabase
-        .databaseBuilder('app_database.db')
-        .build();
-
-    setState(() { _wordDao = database.wordDao; });
-  }
 
   @override
   void initState() {
     super.initState();
-    _loadWord("example");
-    _initDatabase();
+    _initializeHome();
   }
 
-  Future<void> _loadWord(String word) async {
+  Future<void> _initializeHome() async {
+    await _refreshRecentSearches();
+    final lastSearchedWord = await _wordRepo.getLastSearchedWord();
+    await _loadWord(lastSearchedWord ?? 'example', saveToHistory: false);
+  }
+
+  Future<void> _refreshRecentSearches() async {
+    final recentSearches = await _wordRepo.getRecentSearches();
+    if (!mounted) return;
+    setState(() => _recentSearches = recentSearches);
+  }
+
+  Future<void> _loadWord(String word, {bool saveToHistory = true}) async {
+    final normalizedWord = word.trim();
+    if (normalizedWord.isEmpty) return;
+
     setState(() => _isLoading = true);
     try {
       // Wait for the API call to complete
-      final json = await DictionaryAPI().fetchDefinition(word);
+      final json = await DictionaryAPI().fetchDefinition(normalizedWord);
+      final loadedWord = WordResult.fromJson(json);
+
+      if (saveToHistory) {
+        await _wordRepo.insertSearchedWord(loadedWord);
+      }
       
       // Check if widget is still mounted
       if (!mounted) return;
 
       setState(() {
         // Map JSON to your WordResult model
-        _wordResult = WordResult.fromJson(json);
+        _wordResult = loadedWord;
         _isLoading = false;
       });
+
+      if (saveToHistory) {
+        await _refreshRecentSearches();
+      }
     } catch (e) {
       // Failed to load word
       setState(() => _isLoading = false);
@@ -62,14 +76,9 @@ class _HomePageState extends State<HomePage> {
   // Favorite Word
   void _favoriteWord() async {
     if (_isLoading) return;
-    final favoriteWord = FavoriteWord(
-      word: _wordResult.word,
-      definition: _wordResult.definition,
-      phonetic: _wordResult.phonetic
-    );
     final word = _wordResult.word;
 
-    await _wordDao.insertFavoriteWord(favoriteWord);
+    await _wordRepo.insertFavoriteWord(_wordResult);
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -80,15 +89,11 @@ class _HomePageState extends State<HomePage> {
   
   void _removeFavorite() async {
     if (_isLoading) return;
-    final favoriteWord = FavoriteWord(
-      word: _wordResult.word,
-      definition: _wordResult.definition,
-      phonetic: _wordResult.phonetic
-    );
+    // Delete from database
     final word = _wordResult.word;
+    await _wordRepo.deleteFavoriteWord(word);
 
-    await _wordDao.deleteFavoriteWord(favoriteWord);
-
+    // Show snackbar and update state
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('"$word" removed from favorites')),
@@ -101,7 +106,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(widget.title),
+        title: const Text('Define It'),
       ),
       drawer: const AppDrawer(),
       body: Center(
@@ -111,7 +116,10 @@ class _HomePageState extends State<HomePage> {
             // Search Bar
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: WordSearchbar(onSearch: _loadWord),
+              child: WordSearchbar(
+                onSearch: _loadWord,
+                suggestions: _recentSearches,
+              ),
             ),
 
             WordDetails(
