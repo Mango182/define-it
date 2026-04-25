@@ -12,7 +12,7 @@ A Flutter application for looking up word definitions with pronunciations, audio
 - **Offline Access** - Store bookmarked words in local SQLite database
 - **Cross-Platform** - Built for iOS and Android
 
-## Screenshots 📸
+## Screenshots
 
 | Home Screen | Bookmarks | Settings |
 |---|---|---|
