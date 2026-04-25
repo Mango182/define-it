@@ -173,7 +173,5 @@ This is a personal project. All rights reserved.
 
 For issues, suggestions, or bugs, please open an issue in the repository.
 
----
-
 ## Credits
 - **App Icon Artwork** - Created by [ChristM103](https://github.com/christM103)
