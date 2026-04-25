@@ -12,6 +12,12 @@ A Flutter application for looking up word definitions with pronunciations, audio
 - **Offline Access** - Store bookmarked words in local SQLite database
 - **Cross-Platform** - Built for iOS and Android
 
+## Screenshots 📸
+
+| Home Screen | Bookmarks | Settings |
+|---|---|---|
+| ![Home Screen](screenshots/home.png) | ![Bookmarks](screenshots/bookmarks.png) | ![Settings](screenshots/settings.png) |
+
 ## Tech Stack
 
 - **Framework**: Flutter 3.10.8+

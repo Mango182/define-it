@@ -30,9 +30,13 @@ class WordDetails extends StatelessWidget {
   /// Builds the definition text widget
   Widget _definitionText() {
     // Text for the Definition
-    return Text(
-      definition,
-      style: const TextStyle(fontSize: 16),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Text(
+        definition,
+        style: const TextStyle(fontSize: 16),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
@@ -42,6 +46,7 @@ class WordDetails extends StatelessWidget {
     return Text(
       phonetic.isNotEmpty ? phonetic : 'Not available',
       style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+      textAlign: TextAlign.center,
     );
   }
 
