@@ -161,6 +161,9 @@ If the database is corrupted or needs reset:
 - Database queries are optimized with proper indexing
 - Provider ensures efficient UI rebuilds
 
+## Credits
+- **App Icon Artwork** - Created by [ChristM103](https://github.com/christM103)
+
 ## Version 
 
 Current Version: 1.0.0
@@ -172,6 +175,3 @@ This is a personal project. All rights reserved.
 ## Support
 
 For issues, suggestions, or bugs, please open an issue in the repository.
-
-## Credits
-- **App Icon Artwork** - Created by [ChristM103](https://github.com/christM103)
