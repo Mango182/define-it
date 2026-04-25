@@ -175,4 +175,5 @@ For issues, suggestions, or bugs, please open an issue in the repository.
 
 ---
 
-**Happy Learning!**
+## Credits
+- **App Icon Artwork** - Created by [ChristM103](https://github.com/christM103)
