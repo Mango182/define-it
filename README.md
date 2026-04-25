@@ -28,26 +28,13 @@ A Flutter application for looking up word definitions with pronunciations, audio
 lib/
 ├── main.dart                 # App entry point
 ├── screens/                  # UI screens
-│   ├── home_screen.dart      # Main search screen
-│   ├── bookmark_screen.dart  # Saved words screen
-│   └── settings_screen.dart  # App settings
 ├── database/                 # Local database
-│   ├── app_database.dart     # Database configuration
 │   ├── dao/                  # Data Access Objects
 │   └── entities/             # Database models
 ├── services/                 # Business logic
-│   ├── dictionary_api.dart   # API integration
-│   ├── audio_service.dart    # Audio playback
-│   ├── word_repository.dart  # Data repository
-│   └── toast_service.dart    # Toast notifications
 ├── models/                   # Data models
-│   └── word_result.dart      # Word API response
 ├── providers/                # State providers
-│   └── theme_provider.dart   # Theme management
 └── widgets/                  # Reusable components
-    ├── search_bar.dart       # Search input
-    ├── word_details.dart     # Word display
-    └── app_drawer.dart       # Navigation drawer
 ```
 
 ## Getting Started
