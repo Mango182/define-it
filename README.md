@@ -18,16 +18,6 @@ A Flutter application for looking up word definitions with pronunciations, audio
 |---|---|---|
 | ![Home Screen](screenshots/home.png) | ![Bookmarks](screenshots/bookmarks.png) | ![Settings](screenshots/settings.png) |
 
-## Tech Stack
-
-- **Framework**: Flutter 3.10.8+
-- **State Management**: Provider
-- **Database**: Floor + SQLite
-- **API Requests**: HTTP
-- **Audio**: AudioPlayers
-- **Preferences**: Shared Preferences
-- **Development Tools**: Build Runner, Floor Generator
-
 ## Project Structure
 
 ```
@@ -100,67 +90,6 @@ For installable iOS builds, Apple code signing is required.
 | `shared_preferences` | Simple key-value storage |
 | `fluttertoast` | Toast notifications |
 
-## Database Schema
-
-The app uses Floor ORM with SQLite. Key entities:
-
-- **FavoriteWord** - Stores user's bookmarked words with definitions
-- **SearchedWord** - Tracks search history
-
-## Configuration
-
-### Theme Settings
-The app supports automatic theme switching. Configure theme preferences in:
-- `lib/providers/theme_provider.dart`
-
-### App Icons
-Update app icons using flutter_launcher_icons:
-```bash
-flutter pub run flutter_launcher_icons:main
-```
-
-See `flutter_launcher_icons.yaml` for icon configuration.
-
-## Debugging
-
-### SQLite Database Inspector
-The app includes SQLite Inspector for debugging the local database in development mode:
-```dart
-if (kDebugMode) {
-  await SqliteInspector.start();
-}
-```
-
-Access it at: `http://localhost:8080` during app development
-
-## API Integration
-
-The app connects to a dictionary API to fetch word definitions. Configure API endpoints in:
-- `lib/services/dictionary_api.dart`
-
-## Troubleshooting
-
-### Build Issues
-If you encounter build issues:
-```bash
-flutter clean
-flutter pub get
-flutter pub run build_runner build --delete-conflicting-outputs
-```
-
-### Database Issues
-If the database is corrupted or needs reset:
-1. Uninstall the app
-2. Run `flutter clean`
-3. Rebuild and run the app
-
-## Performance Tips
-
-- The app caches recent searches for faster access
-- Audio files are streamed directly without full download
-- Database queries are optimized with proper indexing
-- Provider ensures efficient UI rebuilds
-
 ## Credits
 - **App Icon Artwork** - Created by [ChristM103](https://github.com/christM103)
 
@@ -171,7 +100,3 @@ Current Version: 1.0.0
 ## License
 
 This is a personal project. All rights reserved.
-
-## Support
-
-For issues, suggestions, or bugs, please open an issue in the repository.
